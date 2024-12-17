@@ -7,6 +7,36 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
 
+/**
+ * @swagger
+ * /admins/login:
+ *   post:
+ *     summary: Admin Login
+ *     description: Allows an admin user to log in.
+ *     tags:
+ *       - Admin
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Login successful.
+ *       404:
+ *         description: User not found.
+ *       403:
+ *         description: Access denied.
+ *       500:
+ *         description: Server error.
+ */
+
 // Admin Login Route
 router.post("/login", async (req, res) => {
   try {
@@ -40,6 +70,35 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+/**
+ * @swagger
+ * /admins/add:
+ *   post:
+ *     summary: Add a new admin
+ *     description: Allows an existing admin to add a new admin user.
+ *     tags:
+ *       - Admin
+ *     security:
+ *       - bearerAuth: []  # Enforces Bearer authentication
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userId:
+ *                 type: string
+ *                 description: The user ID to promote to admin.
+ *     responses:
+ *       201:
+ *         description: Admin added successfully.
+ *       403:
+ *         description: Only admins can add new admins.
+ *       500:
+ *         description: Server error.
+ */
 
 
 // Add Admin (only for existing admins)

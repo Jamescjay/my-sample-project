@@ -32,6 +32,40 @@ const sendVerificationEmail = (userEmail, verificationToken) => {
   return transporter.sendMail(mailOptions);
 };
 
+
+/**
+ * @swagger
+ * /users/signup:
+ *   post:
+ *     summary: User Signup
+ *     description: Register a new user account and send a verification email.
+ *     tags:
+ *       - Users
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               firstName:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               country:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: User created successfully.
+ *       400:
+ *         description: User already exists.
+ *       500:
+ *         description: Server error.
+ */
 // Signup Route
 router.post("/signup", validateSignup, async (req, res) => {
   const { name, firstName, email, country, password } = req.body;
@@ -98,6 +132,34 @@ router.get("/verify-email/:token", async (req, res) => {
   }
 });
 
+
+/**
+ * @swagger
+ * /users/login:
+ *   post:
+ *     summary: User Login
+ *     description: Login for existing users.
+ *     tags:
+ *       - Users
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Login successful.
+ *       400:
+ *         description: Invalid email or password.
+ *       500:
+ *         description: Server error.
+ */
 // User Login
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;

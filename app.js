@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const swaggerUI = require("swagger-ui-express");
+const rateLimit = require("express-rate-limit");
 
 // Import route files
 const userRoutes = require("./routes/userRoutes");
@@ -10,34 +12,42 @@ const postRoutes = require("./routes/postRoutes");
 const commentRoutes = require("./routes/commentRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 
+// Import Swagger files
+const userSwaggerDocs = require("./swagger/userSwagger");
+const adminSwaggerDocs = require("./swagger/adminSwagger");
+
 // Load environment variables
 dotenv.config();
 
 // Initialize the Express app
 const app = express();
 
-
 // Middleware
 app.use(bodyParser.json());
 app.use(cors());
 
-const rateLimit = require("express-rate-limit");
-
-// Apply rate-limiting to all routes
+// Rate-limiting middleware
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, 
+  max: 100,
   message: "Too many requests from this IP, please try again after 15 minutes",
   headers: true,
 });
+app.use("/api", apiLimiter); // Apply rate-limiting to all API routes
 
-app.use("/api", apiLimiter); // Apply to all API routes
+// Swagger Documentation Routes
+app.use("/api/docs/user", swaggerUI.serve, (req, res) => {
+  swaggerUI.setup(userSwaggerDocs)(req, res);
+});
 
+app.use("/api/docs/admin", swaggerUI.serve, (req, res) => {
+  swaggerUI.setup(adminSwaggerDocs)(req, res);
+});
 
 // API Routes
 app.use("/api/users", userRoutes); // User routes
 app.use("/api/posts", postRoutes); // Post routes
-app.use("/api/comments", commentRoutes); // Nested comment routes
+app.use("/api/comments", commentRoutes); // Comment routes
 app.use("/api/admins", adminRoutes); // Admin routes
 
 // MongoDB connection
