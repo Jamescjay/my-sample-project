@@ -3,8 +3,36 @@ const Post = require("../models/Post");
 const authMiddleware = require("../middlewares/authMiddleware");
 const router = express.Router();
 
-// Create Post
-router.post("/create", authMiddleware, async (req, res) => {
+/**
+ * @swagger
+ * /users/post:
+ *   post:
+ *     summary: Create a new post
+ *     description: Allows a user to create a new post.
+ *     tags:
+ *       - Post
+ *     security:
+ *       - bearerAuth: []  # Enforces Bearer authentication
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: The title of the post
+ *               content:
+ *                 type: string
+ *                 description: The content of the post
+ *     responses:
+ *       201:
+ *         description: Post created successfully
+ *       500:
+ *         description: Server error
+ */
+router.post("/post", authMiddleware, async (req, res) => {
   try {
     const { title, content } = req.body;
     const post = new Post({
@@ -20,8 +48,45 @@ router.post("/create", authMiddleware, async (req, res) => {
   }
 });
 
-// Edit Post
-router.put("/:postId", authMiddleware, async (req, res) => {
+/**
+ * @swagger
+ * /users/post/{postId}:
+ *   put:
+ *     summary: Edit a post
+ *     description: Allows a user to edit a post they created.
+ *     tags:
+ *       - Post
+ *     security:
+ *       - bearerAuth: []  # Enforces Bearer authentication
+ *     parameters:
+ *       - in: path
+ *         name: postId
+ *         required: true
+ *         description: The ID of the post to update
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               content:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Post updated successfully
+ *       403:
+ *         description: Not authorized
+ *       404:
+ *         description: Post not found
+ *       500:
+ *         description: Server error
+ */
+router.put("/post/:postId", authMiddleware, async (req, res) => {
   try {
     const { title, content } = req.body;
     const post = await Post.findById(req.params.postId);
@@ -45,8 +110,34 @@ router.put("/:postId", authMiddleware, async (req, res) => {
   }
 });
 
-// Delete Post
-router.delete("/:postId", authMiddleware, async (req, res) => {
+/**
+ * @swagger
+ * /users/post/{postId}:
+ *   delete:
+ *     summary: Delete a post
+ *     description: Allows a user to delete a post they created.
+ *     tags:
+ *       - Post
+ *     security:
+ *       - bearerAuth: []  # Enforces Bearer authentication
+ *     parameters:
+ *       - in: path
+ *         name: postId
+ *         required: true
+ *         description: The ID of the post to delete
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Post deleted successfully
+ *       403:
+ *         description: Not authorized
+ *       404:
+ *         description: Post not found
+ *       500:
+ *         description: Server error
+ */
+router.delete("/post/:postId", authMiddleware, async (req, res) => {
   try {
     const post = await Post.findById(req.params.postId);
 

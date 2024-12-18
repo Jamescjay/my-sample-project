@@ -46,8 +46,8 @@ app.use("/api/docs/admin", swaggerUI.serve, (req, res) => {
 
 // API Routes
 app.use("/api/users", userRoutes); // User routes
-app.use("/api/posts", postRoutes); // Post routes
-app.use("/api/comments", commentRoutes); // Comment routes
+app.use("/api/users", postRoutes); // Post routes
+app.use("/api/users", commentRoutes); // Comment routes
 app.use("/api/admins", adminRoutes); // Admin routes
 
 // MongoDB connection

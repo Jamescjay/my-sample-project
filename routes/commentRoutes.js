@@ -4,8 +4,42 @@ const Post = require("../models/Post");
 const authMiddleware = require("../middlewares/authMiddleware");
 const router = express.Router();
 
-// Add Comment
-router.post("/:postId", authMiddleware, async (req, res) => {
+/**
+ * @swagger
+ * /users/comment/{postId}:
+ *   post:
+ *     summary: Add a new comment to a post
+ *     description: Allows a user to add a comment to a specific post.
+ *     tags:
+ *       - Comment
+ *     security:
+ *       - bearerAuth: []  # Enforces Bearer authentication
+ *     parameters:
+ *       - in: path
+ *         name: postId
+ *         required: true
+ *         description: The ID of the post to comment on
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               comment:
+ *                 type: string
+ *                 description: The content of the comment
+ *     responses:
+ *       201:
+ *         description: Comment added successfully
+ *       404:
+ *         description: Post not found
+ *       500:
+ *         description: Server error
+ */
+router.post("/comment/:postId", authMiddleware, async (req, res) => {
   try {
     const { comment } = req.body;
     const post = await Post.findById(req.params.postId);
